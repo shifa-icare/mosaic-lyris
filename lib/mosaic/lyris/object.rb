@@ -193,7 +193,7 @@ module Mosaic
             put_data(request, type, value)
           end
         end
-        
+
         def put_data(request, type, value, attributes = {})
           request.DATA value, {:type => type}.merge(attributes) unless value.nil?
         end

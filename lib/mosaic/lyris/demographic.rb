@@ -39,6 +39,31 @@ module Mosaic
           end
         end
 
+        def enable(ids, options={})
+          reply = post('demographic', 'enable') do |request|
+            request.MLID options[:list_id] if options[:list_id]
+            ids.each do |id|
+              put_data(request, 'id', id.to_i) if id.to_i
+            end
+          end
+          # binding.pry
+          reply.search('/DATASET/DATA').text.split(',').collect do |id|
+            new :enabled => true,
+                :id=>id,
+                :list_id=>options[:list_id]
+          end
+        end
+
+        def disable(ids, *options)
+          reply = post('demographic', 'disable') do |request|
+            request.MLID options[:list_id] if options[:list_id]
+            ids.each do |id|
+              put_data(request, 'id', id.to_i)
+            end
+          end
+          reply.search('/DATASET/TYPE')
+        end
+
       protected
         def demographic_type(type)
           raise ArgumentError, "expected :checkbox, :date, :multiple_checkbox, :multiple_select_list, :radio_button, :select_list, :text or :textarea; got #{type.inspect}" unless %w(checkbox date multiple_checkbox multiple_select_list radio_button select_list text textarea).include?(type.to_s)
