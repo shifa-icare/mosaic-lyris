@@ -2,3 +2,4 @@ pkg
 *.swp
 Gemfile.lock
 test/config.yml
+.DS_Store

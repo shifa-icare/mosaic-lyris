@@ -12,7 +12,6 @@ module Mosaic
     class Error < RuntimeError; end
 
     class Object
-      private_class_method :new
 
       @@logger = nil
 
@@ -132,13 +131,13 @@ module Mosaic
 
         def get_time_element(record, element)
           if data = get_element(record, element)
-            Time.parse(data) + (Time.zone.utc_offset - Time.zone_offset('PST'))
+            Time.parse(data) + (Time.now.utc_offset - Time.zone_offset('PST'))
           end
         end
 
         def get_time_offset_data(record, type, attribute = nil, conditions = {})
           if offset = get_integer_data(record, type, attribute, conditions)
-            offset + (Time.zone.utc_offset - Time.zone_offset('PST'))
+            offset + (Time.now.utc_offset - Time.zone_offset('PST'))
           end
         end
 
@@ -183,7 +182,7 @@ module Mosaic
             reply = http.request(request).body
             logger.debug ">>>>> REPLY:\n#{reply}\n>>>>>" if logger
             document = Nokogiri.XML(reply)
-            raise Error, (document % '/DATASET/DATA').inner_html unless document % "/DATASET/TYPE[.='success']"
+            raise Error, (document % '/DATASET/DATA').inner_html unless (document % "/DATASET/TYPE[.='success'or'norecords']" || document % "/rss/channel")
             document
           end
         end

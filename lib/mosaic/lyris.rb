@@ -3,6 +3,7 @@
   demographic
   filter
   list
+  upload
   message
   partner
   record
