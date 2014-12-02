@@ -85,7 +85,7 @@ module Mosaic
 
         def get_date_data(record, type, attribute = nil, conditions = {})
           data = get_data(record, type, attribute, conditions)
-          Date.parse(data) unless data.blank?
+          Date.parse(data) unless data.blank? || data == 'Proof'
         end
 
         def get_demographic_data(record)
