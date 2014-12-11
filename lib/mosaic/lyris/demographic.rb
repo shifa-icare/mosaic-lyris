@@ -46,7 +46,6 @@ module Mosaic
               put_data(request, 'id', id.to_i) if id.to_i
             end
           end
-          # binding.pry
           reply.search('/DATASET/DATA').text.split(',').collect do |id|
             new :enabled => true,
                 :id=>id,
