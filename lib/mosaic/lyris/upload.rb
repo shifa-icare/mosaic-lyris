@@ -41,7 +41,7 @@ module Mosaic
             request.MLID options[:list_id] || ''
             put_data(request, 'email', email)
             put_extra_data(request, 'file', file)
-            put_extra_data(request, 'type', options[:type] || 'active')
+            put_extra_data(request, 'type', 'active')
             put_extra_data(request, 'trigger', 'yes') if options[:trigger]
             if options[:update]
               put_extra_data(request, 'update', options[:update].to_s == 'only' ? 'only' : 'on')
