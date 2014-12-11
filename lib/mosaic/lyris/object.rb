@@ -168,7 +168,6 @@ module Mosaic
             block.call(xml) if block
           end
           input = xml.target!
-          puts input
           request = Net::HTTP::Post.new("/API/mailing_list.html")
           logger.debug ">>>>> REQUEST:\ntype=#{type}\nactivity=#{activity}\ninput=#{input}\n>>>>>" if logger
           request.set_form_data('type' => type, 'activity' => activity, 'input' => input)
@@ -180,7 +179,6 @@ module Mosaic
           conn.start do |http|
             # TODO: parse encoding from declaration? update declaration after conversion?
             reply = http.request(request).body
-            puts reply
             logger.debug ">>>>> REPLY:\n#{reply}\n>>>>>" if logger
             document = Nokogiri.XML(reply)
             raise Error, (document % '/DATASET/DATA').inner_html unless (document % "/DATASET/TYPE[.='success'or'norecords']" || document % "/rss/channel")
