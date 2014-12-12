@@ -41,7 +41,7 @@ module Mosaic
             request.MLID options[:list_id] || ''
             put_data(request, 'email', email)
             put_extra_data(request, 'file', file)
-            put_extra_data(request, 'type', 'active')
+            put_extra_data(request, 'type', (options[:type] ? options[:type] : 'active'))
             put_extra_data(request, 'trigger', 'yes') if options[:trigger]
             if options[:update]
               put_extra_data(request, 'update', options[:update].to_s == 'only' ? 'only' : 'on')
@@ -81,7 +81,7 @@ module Mosaic
 
         def validate_options!(options)
           raise ArgumentError, "expected type of :active, :proof, :unsubscribed, :bounced, :trashed or :globalunsubscribe; got #{options[:type]}" unless %w(active proof unsubscribed bounced trashed globalunsubscribe).include?(options[:type].to_s) if options[:type]
-          raise ArgumentError, "expected update value of true or :only; for #{options[:update]}" unless %w(true only).include?(options[:update].to_s) if options[:update]
+          raise ArgumentError, "expected update value of on or :only; for #{options[:update]}" unless %w(on only).include?(options[:update].to_s) if options[:update]
         end
       end
     end

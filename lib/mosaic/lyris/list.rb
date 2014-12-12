@@ -34,6 +34,7 @@ module Mosaic
         def add(name, attributes = {})
           reply = post('list', 'add') do |request|
             put_data(request, 'name', name)
+            put_extra_data(request, 'HANDLE_UNSUBSCRIBE', '')
             put_extra_data(request, 'CLICKTHRU_URL', attributes[:clickthru_url])
           end
           new attributes.merge(:id => reply.at('/DATASET/DATA').inner_html.to_i, :name => name)
@@ -46,16 +47,19 @@ module Mosaic
           new :id => id
         end
 
-        def edit(id, name)
+        def edit(id, name, attributes)
           reply = post('list', 'edit') do |request|
             request.MLID id
             put_data(request, 'name', name)
             put_extra_data(request, 'FROM_NAME', attributes[:from_name])
             put_extra_data(request, 'FROM_EMAIL', attributes[:from_email])
           end
-
           new :id => id,
               :type => reply.at('/DATASET/TYPE').inner_html.to_s
+        end
+
+        def download()
+
         end
 
         def query(what)
