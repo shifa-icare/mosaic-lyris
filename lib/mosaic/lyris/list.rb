@@ -47,6 +47,7 @@ module Mosaic
           new :id => id
         end
 
+
         def edit(id, name, attributes)
           reply = post('list', 'edit') do |request|
             request.MLID id
