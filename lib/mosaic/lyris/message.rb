@@ -154,6 +154,8 @@ module Mosaic
             request.MID mid
             put_data(request,'action', options[:action])
             put_data(request,'delivery-year', options[:delivery_year]) if options[:delivery_year]
+            put_data(request,'delivery-month', options[:delivery_month]) if options[:delivery_hour]
+            put_data(request,'delivery-day', options[:delivery_day]) if options[:delivery_hour]
             put_data(request,'delivery-hour', options[:delivery_hour]) if options[:delivery_hour]
             put_data(request,'rule', options[:rule]) if options[:rule]
             put_data(request,'suppression_list', options[:suppression_list]) if options[:suppression_list]
