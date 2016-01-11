@@ -33,7 +33,39 @@ module Mosaic
           end
         end
 
+        def send_mail(id, *recipients)
+          options = recipients.pop if recipients.last.is_a?(Hash)
+          list_id = options[:list_id] || default_list_id
+          reply = post('message', 'add') do |request|
+            request.MLID list_id if list_id
+            put_data(request, 'subject', options[:subject])
+            put_data(request, 'message-html', options[:message]) 
+            put_data(request, 'clickthru', 'on')  
+            put_data(request, 'from_email', options[:from_email])
+            put_data(request, 'from_name', options[:from_name])
+            put_data(request, 'charset', 'UTF-8')
+            put_data(request, 'message-format', 'HTML')
+          end
+          if reply =~ /<TYPE>error<\/TYPE><DATA>(.+?)<\/DATA>/
+            return false
+          elsif reply =~ /<TYPE>success<\/TYPE><DATA>(.+?)<\/DATA>/
+            #send_message($~[1], options.to_h) 
+            trigger = Mosaic::Lyris::Trigger.fire(*args)
+          end
+        end
+        
+
       protected
+        def send_message(message_id, *recipients)
+          options = recipients.pop if recipients.last.is_a?(Hash)
+          list_id = options[:list_id] || default_list_id
+          reply = post('message', 'message-quicktest') do |request|
+            request.MLID list_id if list_id
+            request.MID message_id 
+            put_extra_data(request, 'emails', options[:emails].join(","))
+          end
+        end
+
         def query_all(options)
           reply = post('message', 'query-listdata') do |request|
             request.MLID options[:list_id] if options[:list_id]

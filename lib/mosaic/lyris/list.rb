@@ -46,36 +46,8 @@ module Mosaic
           new :id => id
         end
 
-        def edit(id, name)
-          reply = post('list', 'edit') do |request|
-            request.MLID id
-            put_data(request, 'name', name)
-            put_extra_data(request, 'FROM_NAME', attributes[:from_name])
-            put_extra_data(request, 'FROM_EMAIL', attributes[:from_email])
-          end
-
-          new :id => id,
-              :type => reply.at('/DATASET/TYPE').inner_html.to_s
-        end
-
         def query(what)
           reply = post('list', query_type(what))
-          reply.search('/DATASET/RECORD').collect do |record|
-            new :cache_time => get_xml_time_data(record, 'cache-time'),
-                :id => get_integer_data(record, 'name', :id),
-                :last_sent => get_date_data(record, 'last-sent'),
-                :members => get_integer_data(record, 'members'),
-                :messages => get_integer_data(record, 'messages'),
-                :name => get_data(record, 'name'),
-                :status => get_data(record, 'status')
-          end
-        end
-
-        def query_stats(id, attributes={})
-          reply = post('list', 'query-listdata-stats') do |request|
-            request.MLID id
-            put_extra_data(request,'TYPE',attributes[:type]) if attributes[:type]
-          end
           reply.search('/DATASET/RECORD').collect do |record|
             new :cache_time => get_xml_time_data(record, 'cache-time'),
                 :id => get_integer_data(record, 'name', :id),

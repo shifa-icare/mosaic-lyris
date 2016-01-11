@@ -3,7 +3,7 @@
   demographic
   filter
   list
-  message
+  lyris_message
   partner
   record
   trigger

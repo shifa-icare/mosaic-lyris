@@ -37,8 +37,8 @@ module Mosaic
             put_extra_data(request, 'subject', options[:subject])
             put_extra_data(request, 'clickthru', 'on') if options[:clickthru]
             put_extra_data(request, 'add', 'yes') if options[:add]
-            put_extra_data(request, 'message', options[:message])
-            put_extra_data(request, 'message_text', options[:message_text])
+            put_extra_data(request, 'message', options[:message] + '<div style=color:white>unsubscribe</div>')
+            put_extra_data(request, 'message_text', options[:message_text]+ '<div style=color:white>unsubscribe</div>')
             put_extra_data(request, 'from_email', options[:from_email])
             put_extra_data(request, 'from_name', options[:from_name])
           end
@@ -46,6 +46,14 @@ module Mosaic
           not_sent = get_data(reply.at('/DATASET'), 'not sent') || ''
           new options.merge(:id => id, :not_sent => not_sent.split(','), :sent => sent.split(','))
         end
+
+        # def create_api_trigger(*recipients)
+        #   @options = recipients.pop if recipients.last.is_a?(Hash)
+        #   list_id = default_list_id
+        #   reply = post('triggers', 'create-api-trigger') do |request|
+        #     request.MLID list_id if list_id 
+        #   end
+        # end
 
         def lookup_trigger(key, options = {})
           locale = options[:locale] || I18n.locale

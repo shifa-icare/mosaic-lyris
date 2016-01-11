@@ -177,14 +177,14 @@ module Mosaic
           conn = Net::HTTP.new(server, 443)
           conn.use_ssl = true
           conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
           conn.start do |http|
             # TODO: parse encoding from declaration? update declaration after conversion?
             reply = http.request(request).body
             logger.debug ">>>>> REPLY:\n#{reply}\n>>>>>" if logger
+            
             document = Nokogiri.XML(reply)
-            raise Error, (document % '/DATASET/DATA').inner_html unless document % "/DATASET/TYPE[.='success']"
-            document
+            raise Error, (document % '/DATASET/DATA').inner_html unless reply % "/DATASET/TYPE[.='success']"
+            reply
           end
         end
 
@@ -193,7 +193,7 @@ module Mosaic
             put_data(request, type, value)
           end
         end
-
+        
         def put_data(request, type, value, attributes = {})
           request.DATA value, {:type => type}.merge(attributes) unless value.nil?
         end

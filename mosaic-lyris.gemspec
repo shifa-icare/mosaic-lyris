@@ -6,7 +6,7 @@ require 'mosaic/lyris/version'
 Gem::Specification.new do |gem|
   gem.name = "mosaic-lyris"
   gem.version = Mosaic::Lyris::VERSION
-  gem.date = Date.today.to_s
+ # gem.date = Date.today.to_s
 
   gem.summary = "Lyris/EmailLabs API"
   gem.description = "A wrapper for the Lyris/EmailLabs API to simplify integration"

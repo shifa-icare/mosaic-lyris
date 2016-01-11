@@ -38,9 +38,12 @@ module Mosaic
     # TODO: handle encoding?
     def get_lyris_options(mail)
       lyris_options = {}
+      lyris_options[:emails] = mail.to
       lyris_options[:subject] = mail.subject
-      lyris_options[:from_email] = from_for(mail)
-      lyris_options[:from_name] = friendly_from_for(mail)
+      # lyris_options[:from_email] = from_for(mail)
+      lyris_options[:from_email] = GlobalConstant::DEFAULT_EMAIL_FROM
+      # lyris_options[:from_name] = friendly_from_for(mail)
+      lyris_options[:from_name] = GlobalConstant::DEFAULT_EMAIL_FROM_NAME
       lyris_options[:clickthru] = true
       lyris_options[:message] = get_lyris_html(mail)
       lyris_options[:message_text] = get_lyris_text(mail)
@@ -74,9 +77,9 @@ module Mosaic
       args << Mosaic::Lyris::Object.default_trigger_id
       args += mail.destinations
       args << get_lyris_options(mail)
+      #message = Mosaic::Lyris::Message.send_mail(*args)
       trigger = Mosaic::Lyris::Trigger.fire(*args)
-      # TODO: deal with sent vs not sent
-      # raise "triggered email not sent" unless trigger.sent.include?(email)
+      #trigger = Mosaic::Lyris::Trigger.create_api_trigger(*args)
     end
   end
 end
@@ -85,9 +88,13 @@ if ActionMailer::Base.respond_to?(:add_delivery_method)
   module Mosaic
     class LyrisDeliveryMethod
       include LyrisMailer
+      extend ActionView::Helpers::SanitizeHelper::ClassMethods
 
       def initialize(values = {})
+        self.settings = YAML.load_file(File.join(::Rails.root.to_s,'config','lyris.yml')) rescue {}
       end
+
+      attr_accessor :settings
 
       def deliver!(mail)
         perform_delivery_lyris(mail)
